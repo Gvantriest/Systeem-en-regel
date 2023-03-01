@@ -1,0 +1,57 @@
+## System coefficients
+
+# Total drivetrain inertia, including blades, hub and casted 
+# generator inertia to LSS, [kg m^2]
+J = 2.15e8; 
+# Damping / friction term [Nm (rad/s)^1]
+b = 15e6; 
+
+
+## Time vector
+Tsim = np.arange(0, 100, 0.01)
+
+## Create an integrator variable
+s = cm.tf([1, 0], [1])
+integrator = 1/s
+
+
+################################################################################
+###              ↓↓↓   Start writing your own code here:   ↓↓↓               ###
+
+
+
+
+# Below, insert and define the variables A, B, C and D.
+# Change the matrices below to match your answers:
+
+A = [-b/J]
+B = [1/J]
+C = [1]
+D = [0]
+
+# Then, use `cm.feedback`, `cm.series`, and `cm.parallel` and the variable 
+# `integrator` (defined above), to construct the state space system `sys`.
+
+# >> replace the cm.rss - random state-space with your own code
+sys = cm.ss(states = 1, outputs=1, inputs=1)
+
+
+
+###              ↑↑↑   Stop writing your own code here.    ↑↑↑               ###
+################################################################################
+
+
+## Simulation to check if the answer is correct
+
+sys_check = cm.ss(A,B,C,D)
+y_check, t= cm.step(sys_check,Tsim)
+y, t= cm.step(sys,Tsim)
+
+plt.figure();
+plt.plot(t,y_check,lw=5,ls='-',c='0.6', label='ss-object');
+plt.plot(t,y,lw=1,ls='--',c='k', label='constructed sys-object');
+plt.legend();
+plt.grid();
+plt.xlabel('Time [s]');
+plt.ylabel('Rotor speed [rad/s]');
+plt.title('Step response');
